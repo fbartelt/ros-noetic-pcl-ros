@@ -4,7 +4,7 @@ url='https://wiki.ros.org/perception_pcl'
 pkgname='ros-noetic-pcl-ros'
 pkgver='1.7.4'
 arch=('i686' 'x86_64' 'aarch64' 'armv7h' 'armv6h')
-pkgrel=1
+pkgrel=2
 license=('BSD')
 
 ros_makedepends=(
@@ -46,6 +46,11 @@ depends=(
 _dir="perception_pcl-${pkgver}/pcl_ros"
 source=("${pkgname}-${pkgver}.tar.gz"::"https://github.com/ros-perception/perception_pcl/archive/${pkgver}.tar.gz")
 sha256sums=('cda2a7940e5bb134c5171d52ef24d482e0d21f87c93584b73ff6ba729edcb3d3')
+
+prepare() {
+    cd ${srcdir}/${_dir}/include/pcl_ros/
+    sed -i '10a #include <boost/foreach.hpp> // for BOOST_FOREACH' point_cloud.h #PATCH (https://github.com/ros-perception/perception_pcl/issues/403)
+}
 
 build() {
     # Use ROS environment variables
